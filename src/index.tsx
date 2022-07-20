@@ -28,7 +28,7 @@ const App = () => {
 
     // tell esbuild to parse and bundle the input code to valid javascript code
     const result = await ref.current.build({
-      entryPoints: ['./index.js'],
+      entryPoints: ['index.js'],
       bundle: true,
       write: false,
       plugins: [unpkgPathPlugin()],
