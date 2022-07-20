@@ -26,7 +26,7 @@ const App = () => {
       return
     }
 
-    // tell esbuild to transpile and bundle the input code to valid javascript code
+    // tell esbuild to parse and bundle the input code to valid javascript code
     const result = await ref.current.build({
       entryPoints: ['./index.js'],
       bundle: true,
