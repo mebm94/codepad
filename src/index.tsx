@@ -7,6 +7,7 @@ const App = () => {
   const [code, setCode] = useState('')
   const ref = useRef<any>()
 
+  // initialize of the esbuild service
   const startService = async () => {
     ref.current = await esbuild.startService({
       worker: true,
@@ -14,16 +15,22 @@ const App = () => {
     })
   }
 
+  // call the startService function when the component is first rendered
   useEffect(() => {
     startService()
   }, [])
 
-  const onClick = () => {
+  const onClick = async () => {
     if (!ref.current) {
       return
     }
-    console.log('ref.current :>> ', ref.current)
-    setCode(input)
+
+    // transpile the input code to valid javascript code
+    const result = await ref.current.transform(input, {
+      loader: 'jsx',
+      target: 'es2015',
+    })
+    setCode(result.code)
   }
 
   return (
