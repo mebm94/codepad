@@ -1,6 +1,7 @@
 import * as esbuild from 'esbuild-wasm'
 import { createRoot } from 'react-dom/client'
 import { useState, useEffect, useRef } from 'react'
+import { unpkgPathPlugin } from './plugins/unpkgPathPlugin'
 
 const App = () => {
   const [input, setInput] = useState('')
@@ -25,12 +26,16 @@ const App = () => {
       return
     }
 
-    // transpile the input code to valid javascript code
-    const result = await ref.current.transform(input, {
-      loader: 'jsx',
-      target: 'es2015',
+    // tell esbuild to transpile and bundle the input code to valid javascript code
+    const result = await ref.current.build({
+      entryPoints: ['./index.js'],
+      bundle: true,
+      write: false,
+      plugins: [unpkgPathPlugin()],
     })
-    setCode(result.code)
+    console.log('result :>> ', result)
+
+    setCode(result.outputFiles[0].text)
   }
 
   return (
@@ -42,7 +47,7 @@ const App = () => {
       <div>
         <button onClick={onClick}>Submit</button>
       </div>
-      <pre>{JSON.stringify(code, null, 2)}</pre>
+      <pre>{code}</pre>
     </div>
   )
 }
