@@ -1,9 +1,24 @@
 import { createRoot } from 'react-dom/client'
+import { useState } from 'react'
 
 const App = () => {
+  const [input, setInput] = useState('')
+  const [code, setCode] = useState('')
+
+  const onClick = () => {
+    setCode(input)
+  }
+
   return (
     <div>
-      <h1>Hello World</h1>
+      <textarea
+        value={input}
+        onChange={(e) => setInput(e.target.value)}
+      ></textarea>
+      <div>
+        <button onClick={onClick}>Submit</button>
+      </div>
+      <pre>{JSON.stringify(code, null, 2)}</pre>
     </div>
   )
 }
