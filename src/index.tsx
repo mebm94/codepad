@@ -3,6 +3,9 @@ import { createRoot } from 'react-dom/client'
 import { useState, useEffect, useRef } from 'react'
 import { unpkgPathPlugin } from './plugins/unpkgPathPlugin'
 
+const container = document.getElementById('root')
+const root = createRoot(container!)
+
 const App = () => {
   const [input, setInput] = useState('')
   const [code, setCode] = useState('')
@@ -32,6 +35,10 @@ const App = () => {
       bundle: true,
       write: false,
       plugins: [unpkgPathPlugin()],
+      define: {
+        'process.env.NODE_ENV': '"production"',
+        global: 'window',
+      },
     })
     console.log('result :>> ', result)
 
@@ -52,8 +59,6 @@ const App = () => {
   )
 }
 
-const container = document.getElementById('root')
-const root = createRoot(container!)
-root.render(<App />)
-
 export default App
+
+root.render(<App />)
