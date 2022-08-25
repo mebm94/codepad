@@ -7,7 +7,7 @@ export const unpkgPathPlugin = () => {
 
     // called when the plugin is initialized
     setup(build: esbuild.PluginBuild) {
-      // figure out where the 'index.js' file is located
+      // figure out where the 'index.js' file is located (path that we want to make the request to)
       build.onResolve({ filter: /.*/ }, async (args: any) => {
         console.log('onResolve', args)
 
@@ -29,7 +29,7 @@ export const unpkgPathPlugin = () => {
         }
       })
 
-      // attempt to load the 'index.js' file from the unpkg path
+      // attempt to load (fetch) the 'index.js' file from the unpkg path
       build.onLoad({ filter: /.*/ }, async (args: any) => {
         console.log('onLoad', args)
 
@@ -38,7 +38,7 @@ export const unpkgPathPlugin = () => {
           return {
             loader: 'jsx',
             contents: `
-              import React, { useState } from "react";
+              import React, { useState } from 'react-select';
               console.log(React, useState);
             `,
           }
