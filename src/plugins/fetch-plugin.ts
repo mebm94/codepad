@@ -1,4 +1,4 @@
-import esbuild, { OnLoadArgs, OnLoadResult, OnResolveArgs } from 'esbuild-wasm'
+import esbuild, { OnLoadArgs, OnLoadResult } from 'esbuild-wasm'
 import axios from 'axios'
 import localForage from 'localforage'
 
@@ -6,39 +6,13 @@ import localForage from 'localforage'
 const fileCache = localForage.createInstance({
   name: 'file_cache',
 })
-
-export const unpkgPathPlugin = (inputCode: string) => {
+export const fetchPlugin = (inputCode: string) => {
   return {
-    name: 'unpkg-path-plugin',
+    name: 'fetch-plugin',
 
-    // called when the plugin is initialized
     setup(build: esbuild.PluginBuild) {
-      // Handle root entry file of 'index.js'
-      build.onResolve({ filter: /(^index\.js$)/ }, () => {
-        return { path: 'index.js', namespace: 'a' }
-      })
-
-      // Handle relative paths in a module
-      build.onResolve({ filter: /^\.+\// }, async (args: OnResolveArgs) => {
-        return {
-          namespace: 'a',
-          path: new URL(args.path, `https://unpkg.com${args.resolveDir}/`).href,
-        }
-      })
-
-      // Handle main file of a module
-      build.onResolve({ filter: /.*/ }, async (args: OnResolveArgs) => {
-        return {
-          namespace: 'a',
-          path: `https://unpkg.com/${args.path}`,
-        }
-      })
-
       // attempt to load (fetch) the 'index.js' file from the unpkg path
       build.onLoad({ filter: /.*/ }, async (args: OnLoadArgs) => {
-        console.log('onLoad', args)
-
-        // hardcoded contents value of the file to be bundled
         if (args.path === 'index.js') {
           return {
             loader: 'jsx',
