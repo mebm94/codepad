@@ -9,8 +9,8 @@ const root = createRoot(container!)
 
 const App = () => {
   const [input, setInput] = useState('')
-  const [code, setCode] = useState('')
   const ref = useRef<any>()
+  const iframe = useRef<any>()
 
   // initialize of the esbuild service
   const startService = async () => {
@@ -30,6 +30,8 @@ const App = () => {
       return
     }
 
+    iframe.current.srcdoc = HTML
+
     // tell esbuild to parse and bundle the input code to valid javascript code
     const result = await ref.current.build({
       entryPoints: ['index.js'],
@@ -42,8 +44,28 @@ const App = () => {
       },
     })
 
-    setCode(result.outputFiles[0].text)
+    iframe.current.contentWindow.postMessage(result.outputFiles[0].text, '*')
   }
+
+  const HTML = `
+    <html>
+      <head></head>
+      <body>
+        <div id="root"></div>
+        <script>
+        window.addEventListener('message', (event) => {
+          try {
+            eval(event.data)            
+          } catch (error) {
+            const root = document.querySelector('#root')
+            root.innerHTML = '<div style="color: red"> <h4> Runtime Error </h4>' + error + '</div>'
+            console.error(error)
+          }
+        }, false)
+        </script>    
+      </body>
+    </html>
+  `
 
   return (
     <div>
@@ -54,7 +76,12 @@ const App = () => {
       <div>
         <button onClick={onClick}>Submit</button>
       </div>
-      <pre>{code}</pre>
+      <iframe
+        title='preview'
+        sandbox='allow-scripts'
+        ref={iframe}
+        srcDoc={HTML}
+      ></iframe>
     </div>
   )
 }
