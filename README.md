@@ -2,6 +2,8 @@
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+[![GitHub Super-Linter](https://github.com/mebm94/codepad/workflows/Lint%20Code%20Base/badge.svg)](https://github.com/marketplace/actions/super-linter)
+
 ## Available Scripts
 
 In the project directory, you can run:
